@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class VoiceInteractionManager : MonoBehaviour
 {
-    public string openAiApiKey = "sk-...";
-    public string geminiApiKey = "AIza...";
+    private string openAiApiKey;
+    private string geminiApiKey;
     public Animator avatarAnimator;
 
     private AudioClip recordedClip;
@@ -19,6 +19,8 @@ public class VoiceInteractionManager : MonoBehaviour
 
     void Start()
     {
+        openAiApiKey = EnvironmentManager.OpenAIApiKey;
+        geminiApiKey = EnvironmentManager.GeminiApiKey;
         wavPath = Path.Combine(Application.persistentDataPath, "recorded.wav");
         micDevices = Microphone.devices;
 

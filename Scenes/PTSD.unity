@@ -664,6 +664,7 @@ GameObject:
   m_Component:
   - component: {fileID: 105111892}
   - component: {fileID: 105111893}
+  - component: {fileID: 105111894}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -671,26 +672,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &105111890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105111889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f5655ee23bdf9c4abd26d3cf7301548, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  openAiApiKey: 1
-  geminiApiKey: 1
-  avatarAnimator: {fileID: 1956347840}
-  testKey: 109
-  testKey2: 110
-  selectedMicrophoneDevice: 
-  maxRecordingBufferSeconds: 300
-  ttsAudioSource: {fileID: 308359075}
 --- !u!4 &105111892
 Transform:
   m_ObjectHideFlags: 0
@@ -718,14 +699,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f5655ee23bdf9c4abd26d3cf7301548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openAiApiKey: sk-...
-  geminiApiKey: AIza...
   avatarAnimator: {fileID: 1956347840}
   testKey: 109
   testKey2: 110
   selectedMicrophoneDevice: 
   maxRecordingBufferSeconds: 300
   ttsAudioSource: {fileID: 308359075}
+--- !u!114 &105111894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105111889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3273474db31337644aedf456411965ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &110401137
 GameObject:
   m_ObjectHideFlags: 0
