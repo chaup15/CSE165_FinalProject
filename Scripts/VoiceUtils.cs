@@ -45,6 +45,7 @@ public static class VoiceUtils
     [Serializable]
     public class GeminiFeedback
     {
+        public int score;
         public string feedback;
         public string expression;
         public string suggestion;
@@ -59,7 +60,7 @@ public static class VoiceUtils
         Debug.Log("📁 Saved to " + path);
     }
 
-    public static IEnumerator HandleSpeechToGemini(string path, string openAiApiKey, string geminiApiKey, Action<GeminiFeedback> onComplete)
+    public static IEnumerator HandleSpeechToGemini(string path, string openAiApiKey, string geminiApiKey, Action<GeminiFeedback> onComplete, InterviewManager interviewManager)
     {
         if (string.IsNullOrEmpty(path) || !File.Exists(path))
         {
@@ -106,10 +107,14 @@ public static class VoiceUtils
                         new GeminiPart
                         {
                             // Updated prompt to request JSON directly in the response schema if possible, or ensure clean JSON output.
-                            text = $"Evaluate the following job interview answer and provide feedback. Answer:\n\"{userText}\"\n" +
-                                    "Output ONLY a JSON object with three keys: 'feedback' (string, e.g., 'confident', 'hesitant'), " +
-                                    "'expression' (string, e.g., 'clap', 'neutral', 'frown', 'good'), and " +
-                                    "'suggestion' (string, e.g., 'Speak more clearly.', 'Good points.'). Example: " +
+                            text =  $"You are an interviewer, you have ask the question to interviewee: " +
+                                    $"Topic: {interviewManager.GetCurrentStageName()}, Question: {interviewManager.GetCurrentPrompt()}" +
+                                    $"Evaluate the following job interview answer and provide feedback. Answer:\n\"{userText}\"\n" +
+                                    $"Don't be too harsh. Be lenient!!!" +
+                                    $"Output ONLY a JSON object with four keys: 'score' (integer between 1 to 10, e.g., '5', '6'), " +
+                                    $"'feedback' (string, e.g., 'confident', 'hesitant'), " +
+                                    $"'expression' (string, e.g., 'clap', 'neutral', 'frown', 'good'), and " +
+                                    $"'suggestion' (string, e.g., 'Speak more clearly.', 'Good points.'). Example: " +
                                     "{\"feedback\":\"confident\",\"expression\":\"smile\",\"suggestion\":\"Great answer!\"}"
                         }
                     }

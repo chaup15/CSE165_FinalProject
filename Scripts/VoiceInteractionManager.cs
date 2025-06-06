@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System;
 using UnityEngine;
 
 public class VoiceInteractionManager : MonoBehaviour
@@ -16,6 +17,8 @@ public class VoiceInteractionManager : MonoBehaviour
     public int maxRecordingBufferSeconds = 300;
 
     public AudioSource ttsAudioSource;
+
+    public InterviewManager interviewManager;
 
     void Start()
     {
@@ -87,7 +90,7 @@ public class VoiceInteractionManager : MonoBehaviour
         trimmedClip.SetData(audioData, 0);
 
         VoiceUtils.SaveClipToWav(trimmedClip, wavPath);
-        StartCoroutine(VoiceUtils.HandleSpeechToGemini(wavPath, openAiApiKey, geminiApiKey, OnGeminiFeedbackReceived));
+        StartCoroutine(VoiceUtils.HandleSpeechToGemini(wavPath, openAiApiKey, geminiApiKey, OnGeminiFeedbackReceived, interviewManager));
 
         Destroy(recordedClip);
         recordedClip = null;
@@ -115,4 +118,33 @@ public class VoiceInteractionManager : MonoBehaviour
         }
         return false;
     }
+
+    public void StopRecordingWithCallback(Action<VoiceUtils.GeminiFeedback> onComplete)
+    {
+        if (!Microphone.IsRecording(selectedMicrophoneDevice) && recordedClip == null)
+        {
+            Debug.LogWarning("Not recording.");
+            return;
+        }
+
+        int position = Microphone.IsRecording(selectedMicrophoneDevice)
+            ? Microphone.GetPosition(selectedMicrophoneDevice)
+            : recordedClip.samples;
+        Microphone.End(selectedMicrophoneDevice);
+
+        if (recordedClip == null) return;
+
+        float[] audioData = new float[position * recordedClip.channels];
+        recordedClip.GetData(audioData, 0);
+        AudioClip trimmedClip = AudioClip.Create("TrimmedClip", position, recordedClip.channels, recordedClip.frequency, false);
+        trimmedClip.SetData(audioData, 0);
+
+        VoiceUtils.SaveClipToWav(trimmedClip, wavPath);
+        StartCoroutine(VoiceUtils.HandleSpeechToGemini(wavPath, openAiApiKey, geminiApiKey, onComplete, interviewManager));
+
+        Destroy(recordedClip);
+        recordedClip = null;
+        Destroy(trimmedClip);
+    }
+
 }
