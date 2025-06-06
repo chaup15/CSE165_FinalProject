@@ -102,3 +102,4 @@ crashlytics-build.properties
 # Final_Project/UserSettings
 # Final_Project/Final_Project_BurstDebugInformation_DoNotShip
 # Final_Project/TempAssembly.dll
+.env
