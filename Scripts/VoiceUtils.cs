@@ -76,7 +76,7 @@ public static class VoiceUtils
         UnityWebRequest whisperReq = UnityWebRequest.Post("https://api.openai.com/v1/audio/transcriptions", form);
         whisperReq.SetRequestHeader("Authorization", "Bearer " + openAiApiKey);
         yield return whisperReq.SendWebRequest();
-
+        
         if (whisperReq.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Whisper failed: " + whisperReq.error);
@@ -108,7 +108,7 @@ public static class VoiceUtils
                             // Updated prompt to request JSON directly in the response schema if possible, or ensure clean JSON output.
                             text = $"Evaluate the following job interview answer and provide feedback. Answer:\n\"{userText}\"\n" +
                                     "Output ONLY a JSON object with three keys: 'feedback' (string, e.g., 'confident', 'hesitant'), " +
-                                    "'expression' (string, e.g., 'smile', 'neutral', 'frown'), and " +
+                                    "'expression' (string, e.g., 'clap', 'neutral', 'frown', 'good'), and " +
                                     "'suggestion' (string, e.g., 'Speak more clearly.', 'Good points.'). Example: " +
                                     "{\"feedback\":\"confident\",\"expression\":\"smile\",\"suggestion\":\"Great answer!\"}"
                         }

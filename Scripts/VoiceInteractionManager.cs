@@ -51,6 +51,7 @@ public class VoiceInteractionManager : MonoBehaviour
 
     public void StartRecording()
     {
+        micDevices = Microphone.devices;
         if (Microphone.IsRecording(selectedMicrophoneDevice))
         {
             Debug.LogWarning("Already recording.");
@@ -89,6 +90,7 @@ public class VoiceInteractionManager : MonoBehaviour
         StartCoroutine(VoiceUtils.HandleSpeechToGemini(wavPath, openAiApiKey, geminiApiKey, OnGeminiFeedbackReceived));
 
         Destroy(recordedClip);
+        recordedClip = null;
         Destroy(trimmedClip);
     }
 
