@@ -115,7 +115,7 @@ public static class VoiceUtils
                                     $"'feedback' (string, e.g., 'confident', 'hesitant'), " +
                                     $"'expression' (string, e.g., 'clap', 'neutral', 'frown', 'good'), and " +
                                     $"'suggestion' (string, e.g., 'Speak more clearly.', 'Good points.'). Example: " +
-                                    "{\"feedback\":\"confident\",\"expression\":\"smile\",\"suggestion\":\"Great answer!\"}"
+                                    "{\"score\":\"8\", \"feedback\":\"confident\",\"expression\":\"smile\",\"suggestion\":\"Great answer!\"}"
                         }
                     }
                 }
