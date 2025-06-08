@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class InterviewManager : MonoBehaviour
 {
+    private string positionName;
     public class InterviewStage
     {
         public string Name;
@@ -20,6 +21,7 @@ public class InterviewManager : MonoBehaviour
 
     void Start()
     {
+        positionName = "Software Engineer"; // Example position name, can be set dynamically
         stages = new List<InterviewStage>()
         {
             new InterviewStage("introduction", "Please introduce yourself and tell me why you're interested in this position."),
@@ -57,5 +59,15 @@ public class InterviewManager : MonoBehaviour
     public void ResetInterview()
     {
         currentStageIndex = 0;
+    }
+
+    public string GetPositionName()
+    {
+        return positionName;
+    }
+    
+    public void SetPositionName(string name)
+    {
+        positionName = name;
     }
 }

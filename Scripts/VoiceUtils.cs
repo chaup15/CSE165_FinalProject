@@ -77,7 +77,7 @@ public static class VoiceUtils
         UnityWebRequest whisperReq = UnityWebRequest.Post("https://api.openai.com/v1/audio/transcriptions", form);
         whisperReq.SetRequestHeader("Authorization", "Bearer " + openAiApiKey);
         yield return whisperReq.SendWebRequest();
-        
+
         if (whisperReq.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Whisper failed: " + whisperReq.error);
@@ -107,15 +107,16 @@ public static class VoiceUtils
                         new GeminiPart
                         {
                             // Updated prompt to request JSON directly in the response schema if possible, or ensure clean JSON output.
-                            text =  $"You are an interviewer, you have ask the question to interviewee: " +
+                            text =  $"You are an interviewer for {interviewManager.GetPositionName()} postion, you have ask the question to interviewee: " +
                                     $"Topic: {interviewManager.GetCurrentStageName()}, Question: {interviewManager.GetCurrentPrompt()}" +
                                     $"Evaluate the following job interview answer and provide feedback. Answer:\n\"{userText}\"\n" +
                                     $"Don't be too harsh. Be lenient!!!" +
-                                    $"Output ONLY a JSON object with four keys: 'score' (integer between 1 to 10, e.g., '5', '6'), " +
+                                    $"Output ONLY a JSON object with four keys: " +
+                                    $"'score' (integer between 1 to 10, e.g., '5', '6'), " +
                                     $"'feedback' (string, e.g., 'confident', 'hesitant'), " +
                                     $"'expression' (string, e.g., 'clap', 'neutral', 'frown', 'good'), and " +
                                     $"'suggestion' (string, e.g., 'Speak more clearly.', 'Good points.'). Example: " +
-                                    "{\"score\":\"8\", \"feedback\":\"confident\",\"expression\":\"smile\",\"suggestion\":\"Great answer!\"}"
+                                    "{\"score\":\"8\", \"feedback\":\"confident\",\"expression\":\"clap\",\"suggestion\":\"Great answer!\"}"
                         }
                     }
                 }
@@ -193,7 +194,7 @@ public static class VoiceUtils
         }
     }
 
-    private static string  ExtractJsonFromGemini(string response)
+    private static string ExtractJsonFromGemini(string response)
     {
         // This is a basic extractor. Gemini might return JSON wrapped in ```json ... ``` or other text.
         int firstBrace = response.IndexOf('{');
