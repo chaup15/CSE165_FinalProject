@@ -34671,6 +34671,10 @@ PrefabInstance:
       propertyPath: m_CullTransparentMesh
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2629571762287220074, guid: e04b1517c6a0ec943857b966846d4abe, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7445696251816934703, guid: e04b1517c6a0ec943857b966846d4abe, type: 3}
       propertyPath: m_Name
       value: Main Menu Panel
@@ -35618,7 +35622,7 @@ Transform:
   m_GameObject: {fileID: 2098240435}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 6.74, y: 3.28, z: 0.18}
+  m_LocalPosition: {x: 6.74, y: 1.8, z: 0.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
