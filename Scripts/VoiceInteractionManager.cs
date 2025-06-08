@@ -97,6 +97,31 @@ public class VoiceInteractionManager : MonoBehaviour
         Destroy(trimmedClip);
     }
 
+    public void StopRecording_save()
+    {
+        if (!Microphone.IsRecording(selectedMicrophoneDevice) && recordedClip == null)
+        {
+            Debug.LogWarning("Not recording.");
+            return;
+        }
+
+        int position = Microphone.IsRecording(selectedMicrophoneDevice) ? Microphone.GetPosition(selectedMicrophoneDevice) : recordedClip.samples;
+        Microphone.End(selectedMicrophoneDevice);
+
+        if (recordedClip == null) return;
+
+        float[] audioData = new float[position * recordedClip.channels];
+        recordedClip.GetData(audioData, 0);
+        AudioClip trimmedClip = AudioClip.Create("TrimmedClip", position, recordedClip.channels, recordedClip.frequency, false);
+        trimmedClip.SetData(audioData, 0);
+
+        VoiceUtils.SaveClipToWav(trimmedClip, wavPath);
+
+        Destroy(recordedClip);
+        recordedClip = null;
+        Destroy(trimmedClip);
+    }
+
     void OnGeminiFeedbackReceived(VoiceUtils.GeminiFeedback feedback)
     {
         Debug.Log($"✅ Feedback: {feedback.feedback}, Expression: {feedback.expression}, Suggestion: {feedback.suggestion}");

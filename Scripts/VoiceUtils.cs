@@ -69,30 +69,16 @@ public static class VoiceUtils
         }
 
         // Step 1: Whisper
-        byte[] audioBytes = File.ReadAllBytes(path);
-        WWWForm form = new WWWForm();
-        form.AddBinaryData("file", audioBytes, "recorded.wav", "audio/wav");
-        form.AddField("model", "whisper-1");
-
-        UnityWebRequest whisperReq = UnityWebRequest.Post("https://api.openai.com/v1/audio/transcriptions", form);
-        whisperReq.SetRequestHeader("Authorization", "Bearer " + openAiApiKey);
-        yield return whisperReq.SendWebRequest();
-
-        if (whisperReq.result != UnityWebRequest.Result.Success)
+        string userText = null;
+        bool whisperDone = false;
+        yield return GetWhisperTranscription(path, openAiApiKey, (result) => {
+            userText = result;
+            whisperDone = true;
+        });
+        if (!whisperDone || string.IsNullOrWhiteSpace(userText))
         {
-            Debug.LogError("Whisper failed: " + whisperReq.error);
             yield break;
         }
-
-        string whisperJson = whisperReq.downloadHandler.text;
-        WhisperResponse whisperResponse = JsonUtility.FromJson<WhisperResponse>(whisperJson);
-        if (string.IsNullOrWhiteSpace(whisperResponse?.text))
-        {
-            Debug.LogWarning("Whisper returned empty text.");
-            yield break;
-        }
-
-        string userText = whisperResponse.text;
         Debug.Log("📝 Transcription: " + userText);
 
         // Step 2: Gemini
@@ -125,6 +111,7 @@ public static class VoiceUtils
         };
 
 
+        Debug.Log("Prompt: " + geminiRequest.contents[0].parts[0].text);
         string payload = JsonUtility.ToJson(geminiRequest);
         byte[] body = Encoding.UTF8.GetBytes(payload);
 
@@ -206,5 +193,42 @@ public static class VoiceUtils
         }
         Debug.LogError("❌ Failed to extract JSON from Gemini response using simple brace matching. Response: " + response);
         return null;
+    }
+    public static IEnumerator GetWhisperTranscription(string path, string openAiApiKey, Action<string> onComplete)
+    {
+        if (string.IsNullOrEmpty(path) || !File.Exists(path))
+        {
+            Debug.LogError("Invalid audio path.");
+            onComplete?.Invoke(null);
+            yield break;
+        }
+
+        byte[] audioBytes = File.ReadAllBytes(path);
+        WWWForm form = new WWWForm();
+        form.AddBinaryData("file", audioBytes, "recorded.wav", "audio/wav");
+        form.AddField("model", "whisper-1");
+
+        UnityWebRequest whisperReq = UnityWebRequest.Post("https://api.openai.com/v1/audio/transcriptions", form);
+        whisperReq.SetRequestHeader("Authorization", "Bearer " + openAiApiKey);
+        yield return whisperReq.SendWebRequest();
+
+        if (whisperReq.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Whisper failed: " + whisperReq.error);
+            onComplete?.Invoke(null);
+            yield break;
+        }
+
+        string whisperJson = whisperReq.downloadHandler.text;
+        WhisperResponse whisperResponse = JsonUtility.FromJson<WhisperResponse>(whisperJson);
+        if (string.IsNullOrWhiteSpace(whisperResponse?.text))
+        {
+            Debug.LogWarning("Whisper returned empty text.");
+            onComplete?.Invoke(null);
+            yield break;
+        }
+
+        // Debug.Log("📝 Transcription: " + whisperResponse.text);
+        onComplete?.Invoke(whisperResponse.text);
     }
 }
