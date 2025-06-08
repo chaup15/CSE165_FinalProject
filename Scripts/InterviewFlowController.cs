@@ -11,6 +11,7 @@ public class InterviewFlowManager : MonoBehaviour
 
     private string openAiApiKey;
     private string geminiApiKey;
+    private bool isInterviewing = false;
 
     void Start()
     {
@@ -20,14 +21,27 @@ public class InterviewFlowManager : MonoBehaviour
 
     public void StartInterview()
     {
+        if (isInterviewing) return;
         StartCoroutine(InterviewLoop());
+        isInterviewing = true;
+        Debug.Log("🛑 Interview Start.");
+    }
+    public void StopInterview()
+    {
+        if (!isInterviewing) return;
+        StopAllCoroutines();
+        isInterviewing = false;
+        interviewManager.ResetInterview();
+        Debug.Log("🛑 Interview stopped.");
     }
 
     private IEnumerator InterviewLoop()
     {
+
         int t = 0;
         while (!interviewManager.IsInterviewEnded())
         {
+
             string question = interviewManager.GetCurrentPrompt();
             Debug.Log($"🎤 Interviewer asks: {question}");
 
@@ -42,7 +56,7 @@ public class InterviewFlowManager : MonoBehaviour
             voiceInteractionManager.StartRecording();
 
             // yield return new WaitForSeconds(60f); // or less if you want
-            yield return new WaitForSeconds(30f); // or less if you want
+            yield return new WaitForSeconds(5f); // or less if you want
 
 
             // Step 4: Stop recording and handle STT + Gemini
@@ -60,6 +74,7 @@ public class InterviewFlowManager : MonoBehaviour
 
         // Final message
         yield return TextToSpeechUtils.SpeakText("Thank you for participating in this interview!", openAiApiKey, ttsAudioSource);
+        interviewManager.ResetInterview();
     }
 
     // Gemini
