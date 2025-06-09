@@ -164,6 +164,7 @@ public class InterviewFlowManager : MonoBehaviour
         if (avatarAnimator != null && !string.IsNullOrEmpty(feedback.expression))
         {
             avatarAnimator.SetTrigger(feedback.expression);
+            avatarAnimator.SetTrigger("neutral");
         }
 
         // Step 6: TTS播放
